@@ -1,2 +1,2 @@
 # CourseScraper
- Scrapes courses by subject from Opencourselist
+ Scrapes courses by subject from Opencourselist using BeautifulSoup4
