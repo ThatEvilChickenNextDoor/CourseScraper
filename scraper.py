@@ -9,7 +9,7 @@ con.execute('''CREATE TABLE IF NOT EXISTS courses (
     attr TEXT,
     title TEXT,
     instr TEXT
-    )''')
+    );''')
 
 with open('csciCoursePage.html') as page:
     soup = BeautifulSoup(page, 'lxml')
@@ -35,7 +35,7 @@ dat = [[row[0], row[1][:-3], row[1][-2:]] + row[2:5] for row in courses]
 
 with con:
     con.executemany('''INSERT INTO courses (crn, course, section, attr, title, instr)
-        values (?, ?, ?, ?, ?, ?)''', dat)
+        VALUES (?, ?, ?, ?, ?, ?);''', dat)
         
-for row in con.execute('''SELECT * FROM courses'''):
+for row in con.execute('''SELECT * FROM courses WHERE course=?;''', ('CSCI 141',)):
     print(row)
