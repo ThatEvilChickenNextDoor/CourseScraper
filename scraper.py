@@ -1,4 +1,15 @@
 from bs4 import BeautifulSoup
+import sqlite3
+
+con = sqlite3.connect(':memory:')
+con.execute('''CREATE TABLE IF NOT EXISTS courses (
+    crn INTEGER PRIMARY KEY,
+    course TEXT,
+    section INTEGER,
+    attr TEXT,
+    title TEXT,
+    instr TEXT
+    )''')
 
 with open('csciCoursePage.html') as page:
     soup = BeautifulSoup(page, 'lxml')
@@ -17,5 +28,14 @@ for row in table_rows:
 
 courses = [[i.text.strip() for i in row.find_all('td')] for row in table_rows][1:]
 
-for course in courses:
-    print(course)
+dat = [[row[0], row[1][:-3], row[1][-2:]] + row[2:5] for row in courses]
+
+#for course in dat:
+#    print(course)
+
+with con:
+    con.executemany('''INSERT INTO courses (crn, course, section, attr, title, instr)
+        values (?, ?, ?, ?, ?, ?)''', dat)
+        
+for row in con.execute('''SELECT * FROM courses'''):
+    print(row)
