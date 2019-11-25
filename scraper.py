@@ -2,7 +2,7 @@ from bs4 import BeautifulSoup
 import sqlite3
 import requests
 
-LOCAL = True
+LOCAL = False
 
 con = sqlite3.connect(':memory:')
 con.execute('''DROP TABLE IF EXISTS courses;''')
@@ -18,10 +18,9 @@ if LOCAL:
     with open('csciCoursePage.html') as page:
         soup = BeautifulSoup(page, 'lxml')
 else:
-    URL = 'https://courselist.wm.edu/courselist/courseinfo/searchresults?term_code=202020&term_subj=CSCI&attr=0&attr2=0&levl=0&status=0&ptrm=0&search=Search'
+    URL = 'https://courselist.wm.edu/courselist/courseinfo/searchresults?term_code=202020&term_subj=CSCI&attr=0&attr2=0&levl=UG&status=0&ptrm=0&search=Search'
     r = requests.get(URL)
-    soup = BeautifulSoup(r.content, 'lxml')
-
+    soup = BeautifulSoup(r.text, 'html5lib')
 table = soup.table
 table_rows = table.find_all('tr')
 
@@ -45,4 +44,8 @@ with con:
     con.executemany('''INSERT INTO courses (crn, course, section, attr, title, instr)
         VALUES (?, ?, ?, ?, ?, ?);''', dat)
         
-print(list(con.execute('''SELECT DISTINCT course FROM courses;''')))
+for course in con.execute('''SELECT DISTINCT course FROM courses ORDER BY course;'''):
+    cur = con.execute('''SELECT crn FROM courses WHERE course=? ORDER BY section;''', course)
+    print(cur.fetchone()[0], course[0])
+
+con.close()
