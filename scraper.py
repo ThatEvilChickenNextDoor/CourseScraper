@@ -61,6 +61,6 @@ if SCRAPE:
         con.executemany('''UPDATE courses SET prereqs=?, coreqs=?, require=? WHERE crn=?;''', res)
 
 for row in con.execute('''SELECT * FROM courses;'''):
-    print(row)
+    print(row, '\n')
 
 con.close()
