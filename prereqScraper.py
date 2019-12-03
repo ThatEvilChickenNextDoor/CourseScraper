@@ -3,15 +3,20 @@ import requests
 from time import sleep
 from random import random
 
-def getReqs(crn):
-    baseURL = 'https://courselist.wm.edu/courselist/courseinfo/addInfo?fterm=202020&fcrn='
-    URL = baseURL + str(crn)
+def getReqs(req):
+    if req[1] == 'Fall':
+        baseURL = 'https://courselist.wm.edu/courselist/courseinfo/addInfo?fterm=202010&fcrn='
+    elif req[1] == 'Spring':
+        baseURL = 'https://courselist.wm.edu/courselist/courseinfo/addInfo?fterm=202020&fcrn='
+    else:
+        raise ValueError
+    URL = baseURL + str(req[0])
     r = requests.get(URL)
     soup = BeautifulSoup(r.text, 'html5lib')
     table = soup.table
     table_rows = table.find_all('tr')
     fields = [row.text.strip() for row in table_rows]
-    return((fields[3], fields[5], fields[7], int(crn)))
+    return((fields[3], fields[5], fields[7], int(req[0])))
     
 def reqStack(reqs):
     results = list()
