@@ -53,7 +53,7 @@ a img {
     src: url('Rokkitt-Regular.eot');
     src: url("Rokkitt-Regular.eot?#iefix") format("embedded-opentype"),
     url("Rokkitt-Regular.svg#Rokkitt") format("svg"),
-    url("Rokkitt-Regular.woff") format("woff"),
+    url("resource:/css/Rokkitt-Regular.woff") format("woff"),
     url("Rokkitt-Regular.ttf") format("truetype");
 }
 h1, h2, h3, h4, h5, h6, footer {
