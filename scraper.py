@@ -18,14 +18,14 @@ con.execute('''CREATE TABLE courses (
     course TEXT UNIQUE,
     attr TEXT,
     title TEXT,
-    prereqs TEXT,
-    coreqs TEXT,
-    require TEXT
+    prereqs TEXT DEFAULT '?',
+    coreqs TEXT DEFAULT '?',
+    require TEXT DEFAULT '?'
     );''')
 
 if LOCAL:
     with open('csciCoursePage.html') as page:
-        soup = BeautifulSoup(page, 'lxml')
+        soup = BeautifulSoup(page, 'html5lib')
 else:
     URL = 'https://courselist.wm.edu/courselist/courseinfo/searchresults?term_code=202020&term_subj=MATH&attr=0&attr2=0&levl=UG&status=0&ptrm=0&search=Search'
     r = requests.get(URL)
@@ -60,7 +60,7 @@ if SCRAPE:
     with con:
         con.executemany('''UPDATE courses SET prereqs=?, coreqs=?, require=? WHERE crn=?;''', res)
 
-for row in con.execute('''SELECT * FROM courses;'''):
+for row in con.execute('''SELECT * FROM courses ORDER BY course;'''):
     print(row, '\n')
 
 con.close()
